@@ -1,20 +1,23 @@
+# script to create an aggregated table with all subjects' answers to free recall task before and after sleep;
+# 1 indicates that the answer is correct, empty cell - no response was given, otherwise the original word given by the subject is written
+
 # all imports
 from os import path
 from psychopy import gui
 import pandas as pd
 from unidecode import unidecode  # for convertion czech symbols to english ones
 
-
 # read xls table with all images names from all subjects
 all_names = pd.read_excel('f:\Sofia\sleep project\EMT study\ALL_results\PsychoPy xls\image names\ALL_GOOD\All_names_of_images.xlsx')
+#all_names = pd.read_excel('F:\Sofia\sleep project\EMT study\ALL_results\PsychoPy raw\All_names_of_images.xlsx')
 all_names = all_names.set_index('sound')
 
-# delete unnessesary columns
+# delete unnecessary columns
 all_names.drop(columns=['image', 'set'], inplace=True)
 
 # convert all czech symbols to english symbols and make all lower case
 for column in all_names.columns:
-  all_names[column] = all_names[column].apply(lambda x: unidecode(x.lower()))
+    all_names[column] = all_names[column].apply(lambda x: unidecode(x.lower()))
 
 
 # Function to remove duplicates in a row
@@ -44,7 +47,7 @@ def check_answer(row):
 
 
 # upload the files for all subjects (free recall before and after sleep)
-filenames = gui.fileOpenDlg(allowed="*.xlsx")
+filenames = gui.fileOpenDlg(allowed="*free_recall*.xlsx")
 
 # create an empty DataFrame to store the aggregated data
 aggregated_data = pd.DataFrame()
@@ -57,7 +60,7 @@ for thisFilename in filenames:
     subject_id = file_parts[0]
     sleep_status = file_parts[3]  # before or after sleep
 
-    # leave only nessesary columns
+    # leave only necessary columns
     df_new = df[['sound_free_recall', 'answer']]
 
     # convert all czech symbols to english symbols and make all lower case
@@ -93,6 +96,3 @@ aggregated_data.index.names = ['subject_id', '']
 # export a final table to xls
 file_name = "\Free_recall_aggregated_table.xlsx"
 aggregated_data.to_excel('f:\Sofia\sleep project\EMT study\ALL_results\PsychoPy xls' + file_name)
-
-
-

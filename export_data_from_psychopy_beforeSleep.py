@@ -1,10 +1,13 @@
-# all imports 
+# script for exporting data from psychopy test before sleep to Excel file; output - 2 xls files per participant -
+# forced choice and free recall
+
+# all imports
 from os import path
 from psychopy import gui
 import pandas as pd
 
 # upload the files
-filenames = gui.fileOpenDlg(allowed="*.csv")
+filenames = gui.fileOpenDlg(allowed="*.csv")  # select csv files for the all participants we need
 
 for thisFilename in filenames:
     print(thisFilename)
