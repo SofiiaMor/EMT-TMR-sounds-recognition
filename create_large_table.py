@@ -7,9 +7,13 @@ from psychopy import gui
 import pandas as pd
 from unidecode import unidecode  # for convertion czech symbols to english ones
 
+# Define all file paths
+image_names_excel_path = r'f:\Sofia\sleep project\EMT study\ALL_results\PsychoPy xls\image names\ALL_GOOD\All_names_of_images.xlsx'
+output_directory = r'f:\Sofia\sleep project\EMT study\ALL_results\PsychoPy xls'
+file_name = "\Free_recall_aggregated_table.xlsx"  # the name of the final table
+
 # read xls table with all images names from all subjects
-all_names = pd.read_excel('f:\Sofia\sleep project\EMT study\ALL_results\PsychoPy xls\image names\ALL_GOOD\All_names_of_images.xlsx')
-#all_names = pd.read_excel('F:\Sofia\sleep project\EMT study\ALL_results\PsychoPy raw\All_names_of_images.xlsx')
+all_names = pd.read_excel(image_names_excel_path)
 all_names = all_names.set_index('sound')
 
 # delete unnecessary columns
@@ -33,7 +37,6 @@ def remove_duplicates(row):
 
 # apply the function to each row in the DataFrame
 all_unique_names = all_names.apply(remove_duplicates, axis=1)
-
 
 # a function to check if the answer is in the list within the all_unique_names series
 def check_answer(row):
@@ -64,16 +67,19 @@ for thisFilename in filenames:
     df_new = df[['sound_free_recall', 'answer']]
 
     # convert all czech symbols to english symbols and make all lower case
-    df_new['answer'] = df_new['answer'].apply(lambda x: unidecode(x.lower()) if isinstance(x, str) else x)
+    df_new.loc[:, 'answer'] = df_new['answer'].apply(lambda x: unidecode(x.lower()) if isinstance(x, str) else x)
+    #df_new['answer'] = df_new['answer'].apply(lambda x: unidecode(x.lower()) if isinstance(x, str) else x)
 
     # apply the function to each row in the DataFrame to check if the answer is correct
-    df_new['answer'] = df_new.apply(check_answer, axis=1)
+    df_new.loc[:, 'answer'] = df_new.apply(check_answer, axis=1)
+    #df_new['answer'] = df_new.apply(check_answer, axis=1)
 
     # set the 'sound_free_recall' column as the index
     df_new.set_index('sound_free_recall', inplace=True)
 
     # rename the 'answer' column to 'before_sleep' or 'after_sleep' based on sleep status
-    df_new.rename(columns={'answer': f'{sleep_status}_sleep'}, inplace=True)
+    df_new = df_new.rename(columns={'answer': f'{sleep_status}_sleep'})
+    #df_new.rename(columns={'answer': f'{sleep_status}_sleep'}, inplace=True)
 
     # transpose the DataFrame to have sounds as columns
     df_new = df_new.T
@@ -94,5 +100,5 @@ aggregated_data.set_index(['subject_id', ['after_sleep', 'before_sleep'] * (len(
 aggregated_data.index.names = ['subject_id', '']
 
 # export a final table to xls
-file_name = "\Free_recall_aggregated_table.xlsx"
-aggregated_data.to_excel('f:\Sofia\sleep project\EMT study\ALL_results\PsychoPy xls' + file_name)
+aggregated_data.to_excel(output_directory + file_name)
+
