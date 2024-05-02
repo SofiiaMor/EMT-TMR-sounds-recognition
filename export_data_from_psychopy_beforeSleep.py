@@ -7,7 +7,7 @@ from psychopy import gui
 import pandas as pd
 
 # upload the files
-filenames = gui.fileOpenDlg(allowed="*.csv")  # select csv files for the all participants we need
+filenames = gui.fileOpenDlg(allowed="*.csv")  # select csv files from the evening session for the all participants we need
 
 for thisFilename in filenames:
     print(thisFilename)

@@ -5,6 +5,9 @@ from os import path
 from psychopy import gui
 import pandas as pd
 
+# Define a file path to the table with pairs of sounds and images
+pairs_sounds_path = 'f:/Sofia/sleep project/EMT study/ALL_results/PsychoPy xls/image names/pair of sounds and images.xlsx'
+
 # upload the files
 filenames = gui.fileOpenDlg(allowed="*list_images_names*.xlsx")  # select all xls files with filename _list_images_names
 ind = 0  # index for column names
@@ -24,9 +27,8 @@ for thisFilename in filenames:
 # join all tables in one
 output = dfs[0].join(dfs[1:])
 
-
 # add table with pairs of sounds and images
-pairs = pd.read_excel('f:/Sofia/sleep project/EMT study/ALL_results/PsychoPy xls/image names/pair of sounds and images.xlsx')
+pairs = pd.read_excel(pairs_sounds_path)
 pairs = pairs.set_index('image')
 #print(pairs)
 output = pairs.join(output)
